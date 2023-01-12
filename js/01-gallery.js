@@ -3,41 +3,32 @@ import { galleryItems } from './gallery-items.js';
 
 console.log(galleryItems);
 
-const galleryContainer = document.querySelector(".gallery");
-const galleryMarkup = createGalleryItemsMarkup(galleryItems);
+const galleryRefs = document.querySelector(".gallery");
+const listItemImage = createListItemImage(galleryItems);
+galleryRefs.innerHTML = listItemImage;
 
-galleryContainer.insertAdjacentHTML("beforeend", galleryMarkup);
-galleryContainer.addEventListener("click", onGalleryContainerClick);
+galleryRefs.addEventListener("click", onConteinerClickZoomImage);
 
-function createGalleryItemsMarkup(items) {
-  return galleryItems
-    .map(({ preview, original, description }) => {
-      return `<div class="gallery__item">
-  <a class="gallery__link" href="${original}">
-    <img
-      class="gallery__image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-    />
-  </a>
-</div>`;
-    })
+function createListItemImage(elements) {
+  return elements
+    .map(
+      (element) =>
+        `<div class="gallery__item"><a class="gallery__link" href="${element.original}"><img class="gallery__image" src="${element.preview}" alt="${element.description}" data-source="${element.original}" 
+        ></a></div>`
+    )
     .join("");
 }
-function onGalleryContainerClick(e) {
-  e.preventDefault();
 
-  const isGalleryItemEl = e.target.classList.contains(".gallery-item");
-  if (isGalleryItemEl) {
+function onConteinerClickZoomImage(element) {
+  element.preventDefault();
+
+  if (element.target.classList.contains("gallery")) {
     return;
   }
 
-  const isGalleryItemLink = e.target.dataset.source;
+  const source = element.target.dataset.source;
 
-  const instance = basicLightbox.create(`
-    <img src="${isGalleryItemLink}">
-`);
-
-  instance.show();
+  const instance = basicLightbox
+    .create(`<img src="${source}" width="800" height="600">`)
+    .show();
 }
